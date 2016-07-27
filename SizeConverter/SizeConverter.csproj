@@ -61,7 +61,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="AddCommand.cs" />
     <Compile Include="InputSizeModel.cs" />
+    <Compile Include="RemoveCommand.cs" />
     <Compile Include="SizesViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

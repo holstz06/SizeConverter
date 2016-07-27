@@ -24,7 +24,11 @@ namespace SizeConverter
             AddCommand = new AddCommand(this);
             RemoveCommand = new RemoveCommand(this);
         }
-
+        ///////////////////////////////////////////////////////////////////////
+        /// <summary>
+        ///     Removes the last input model from the collection
+        /// </summary>
+        ///////////////////////////////////////////////////////////////////////
         public void Remove()
         {
             // Find the input model we are removing
@@ -197,46 +201,5 @@ namespace SizeConverter
         //=======================================================
         public readonly double[] PanelSizes = { 24, 30, 36, 48, 60, 72, 84, 96 };
         public readonly double[] ShelfSizes = { 12, 18, 24, 30, 36, 42 };
-    }
-
-    public class AddCommand : ICommand
-    {
-        SizesViewModel viewModel;
-        public AddCommand(SizesViewModel viewModel)
-        {
-            this.viewModel = viewModel;
-        }
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            viewModel.AddInput(0, 0);
-        }
-    }
-
-    public class RemoveCommand : ICommand
-    {
-        SizesViewModel viewModel;
-        public RemoveCommand(SizesViewModel viewModel)
-        {
-            this.viewModel = viewModel;
-        }
-        public event EventHandler CanExecuteChanged;
-
-        public bool CanExecute(object parameter)
-        {
-            return true;
-        }
-
-        public void Execute(object parameter)
-        {
-            if (viewModel.InputModels.Count > 0)
-                viewModel.Remove();
-        }
     }
 }
