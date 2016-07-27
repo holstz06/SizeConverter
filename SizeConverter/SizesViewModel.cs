@@ -14,6 +14,7 @@ namespace SizeConverter
         public ObservableCollection<OutputSizeModel> OutputModels { get; set; } = new ObservableCollection<OutputSizeModel>();
 
         public AddCommand AddCommand { get; private set; }
+        public RemoveCommand RemoveCommand { get; private set; }
 
         public bool Panels { get; set; } = false;
         public bool Shelves { get; set; } = true;
@@ -21,6 +22,21 @@ namespace SizeConverter
         public SizesViewModel()
         {
             AddCommand = new AddCommand(this);
+            RemoveCommand = new RemoveCommand(this);
+        }
+
+        public void Remove()
+        {
+            // Find the input model we are removing
+            var removedInput = InputModels[InputModels.Count - 1];
+            var inputMeasurements = FindSize(removedInput.InputSize, removedInput.InputQuantity);
+
+            // We need to subtract the quantity from the output, so we take the value from 0
+            ChangeOutput(inputMeasurements.Key, (0 - inputMeasurements.Value));
+
+            // Remove the model
+            if (InputModels.Count != 0)
+                InputModels.RemoveAt(InputModels.Count - 1);
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -51,7 +67,6 @@ namespace SizeConverter
             InputModels.Add(input);
 
             return input;
-
         }
 
         ///////////////////////////////////////////////////////////////////////
@@ -101,7 +116,7 @@ namespace SizeConverter
 
         ///////////////////////////////////////////////////////////////////////
         /// <summary>
-        ///     Adds an output model to the collection
+        ///     Changes the collection of output models
         /// </summary>
         /// 
         /// <param name="InputSize">
@@ -112,7 +127,7 @@ namespace SizeConverter
         ///     The quantity of shelving that is inputed from the user (should be categorical)
         /// </param>
         ///////////////////////////////////////////////////////////////////////
-        public void AddOutput(double InputSize, int InputQuantity)
+        public void ChangeOutput(double InputSize, int InputQuantity)
         {
             // Search through each of our output values and find a matching out
             // If there is a matching output, increase its quantity and indicate there
@@ -124,11 +139,16 @@ namespace SizeConverter
                 {
                     output.OutputQuantity += InputQuantity;
                     outputFound = true;
+                    if (output.OutputQuantity <= 0)
+                    {
+                        OutputModels.Remove(output);
+                        break;
+                    }
                 }
             }
 
             // If there was no output found, then we need to create a new output
-            if (!outputFound)
+            if (!outputFound && InputQuantity != 0)
             {
                 OutputSizeModel newOutput = new OutputSizeModel()
                 {
@@ -147,6 +167,12 @@ namespace SizeConverter
         void OnPropertyChanged(string propertyName)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+            switch(propertyName)
+            {
+                case "Panels": InputModels.Clear(); OutputModels.Clear(); break;
+                case "Shelves": InputModels.Clear(); OutputModels.Clear(); break;
+
+            }
         }
 
         private void InputSize_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -157,9 +183,9 @@ namespace SizeConverter
             switch (e.PropertyName)
             {
                 case "InputSize":
-                    AddOutput(inputMeasurement.Key, inputMeasurement.Value - input.PreviousQuantity); break;
+                    ChangeOutput(inputMeasurement.Key, inputMeasurement.Value - input.PreviousQuantity); break;
                 case "InputQuantity":
-                    AddOutput(inputMeasurement.Key, inputMeasurement.Value - input.PreviousQuantity);
+                    ChangeOutput(inputMeasurement.Key, inputMeasurement.Value - input.PreviousQuantity);
                     if(input.PreviousQuantity == 0)
                         AddInput(0, 0);
                     break;
@@ -190,6 +216,27 @@ namespace SizeConverter
         public void Execute(object parameter)
         {
             viewModel.AddInput(0, 0);
+        }
+    }
+
+    public class RemoveCommand : ICommand
+    {
+        SizesViewModel viewModel;
+        public RemoveCommand(SizesViewModel viewModel)
+        {
+            this.viewModel = viewModel;
+        }
+        public event EventHandler CanExecuteChanged;
+
+        public bool CanExecute(object parameter)
+        {
+            return true;
+        }
+
+        public void Execute(object parameter)
+        {
+            if (viewModel.InputModels.Count > 0)
+                viewModel.Remove();
         }
     }
 }

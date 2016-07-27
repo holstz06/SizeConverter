@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SizeConverter"
         mc:Ignorable="d"
-        Title="MainWindow" Height="550" Width="300">
+        Title="Shelving Size Converter" Height="550" Width="415">
     <Grid>
         <Grid.DataContext>
             <local:SizesViewModel/>
@@ -23,11 +23,21 @@
                 <Setter Property="FontSize" Value="16" />
                 <Setter Property="HorizontalContentAlignment" Value="Center" />
             </Style>
+            <Style TargetType="Button">
+                <Setter Property="FontFamily" Value="Segoe UI Light" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+            </Style>
+            <Style TargetType="RadioButton">
+                <Setter Property="FontFamily" Value="Segoe UI Light" />
+                <Setter Property="FontSize" Value="16" />
+                <Setter Property="HorizontalContentAlignment" Value="Center" />
+            </Style>
         </Grid.Resources>
         
         <Grid.RowDefinitions>
-            <RowDefinition Height="100" />
-            <RowDefinition Height="25" />
+            <RowDefinition Height="0" />
+            <RowDefinition Height="28" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
@@ -38,20 +48,20 @@
         </Grid.ColumnDefinitions>
 
         <Button Content="Add" Grid.Row="1" Grid.Column="0" Command="{Binding AddCommand}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  BorderThickness="0,0,0,1" BorderBrush="Green" Foreground="Green" Background="White" />
-        <Button Content="Remove" Grid.Row="1" Grid.Column="1" BorderThickness="0,0,0,1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  BorderBrush="Red" Foreground="Red" Background="White" />
+        <Button Content="Remove" Grid.Row="1" Grid.Column="1" Command="{Binding RemoveCommand}" BorderThickness="0,0,0,1" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"  BorderBrush="Red" Foreground="Red" Background="White" />
         <ItemsControl Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding InputModels}" KeyboardNavigation.TabNavigation="Cycle" BorderThickness="0,0,1,0" BorderBrush="#333">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Orientation="Horizontal">
-                        <TextBox Text="{Binding InputSize, Mode=TwoWay}" Height="28" Width="70" HorizontalContentAlignment="Center" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown" />
-                        <TextBox Text="{Binding InputQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28" Width="70" HorizontalContentAlignment="Center" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown" />
+                        <TextBox Text="{Binding InputSize, Mode=TwoWay}" Height="28" Width="100" HorizontalContentAlignment="Center" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown" />
+                        <TextBox Text="{Binding InputQuantity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="28" Width="100" HorizontalContentAlignment="Center" GotKeyboardFocus="TextBox_GotKeyboardFocus" PreviewMouseLeftButtonDown="TextBox_PreviewMouseLeftButtonDown" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <RadioButton x:Name="radioShelves" Grid.Row="1" Grid.Column="2" Content="Shelves" HorizontalAlignment="Left" IsChecked="{Binding Shelves}" VerticalContentAlignment="Center" />
-        <RadioButton x:Name="radioPanels" Grid.Row="1" Grid.Column="3" Content="Panels" IsChecked="{Binding Panels}" VerticalContentAlignment="Center" />
+        <RadioButton x:Name="radioShelves" Grid.Row="1" Grid.Column="2" Content="Shelves" HorizontalAlignment="Center" IsChecked="{Binding Shelves}" VerticalContentAlignment="Center" />
+        <RadioButton x:Name="radioPanels" Grid.Row="1" Grid.Column="3" Content="Panels" IsChecked="{Binding Panels}" VerticalContentAlignment="Center" HorizontalAlignment="Center"  />
         <ItemsControl Grid.Row="2" Grid.Column="2" Grid.ColumnSpan="2" ItemsSource="{Binding OutputModels}" BorderThickness="0,0,0,0">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
